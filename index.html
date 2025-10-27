@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Toto Macau</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        .number-ball {
+            animation: bounce 0.5s ease-in-out;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-btn.active {
+            background: linear-gradient(to right, #fbbf24, #f59e0b);
+            color: white;
+        }
+        .tab-btn {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .two-d-ball {
+            animation: pulse 0.6s ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .three-d-ball {
+            animation: slideIn 0.7s ease-in-out;
+        }
+        @keyframes slideIn {
+            0% { transform: translateX(-20px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        .four-d-ball {
+            animation: rotateIn 0.8s ease-in-out;
+        }
+        @keyframes rotateIn {
+            0% { transform: rotate(-180deg) scale(0.5); opacity: 0; }
+            100% { transform: rotate(0deg) scale(1); opacity: 1; }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white font-sans">
+  <main class="container mx-auto px-4 py-6 h-full"><!-- Header -->
+   <header class="text-center mb-8">
+    <h1 id="system-title" class="text-4xl font-bold mb-2 text-yellow-300">Toto Macau System</h1>
+    <p id="header-subtitle" class="text-blue-200">Sistem prediksi berdasarkan pasaran Jawa dan kolaborasi China</p>
+   </header><!-- Current Draw Section -->
+   <section class="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-6 border border-white/20">
+    <h2 class="text-2xl font-semibold mb-4 text-center text-yellow-300">🎯 Draw Hari Ini</h2><!-- Game Type Tabs -->
+    <div class="flex justify-center mb-6">
+     <div class="bg-white/10 rounded-lg p-1 flex flex-wrap gap-1 justify-center"><button id="tab-5d" class="tab-btn active px-3 py-2 rounded-md font-semibold transition-all duration-300 text-xs">Toto 5D</button> <button id="tab-4d" class="tab-btn px-3 py-2 rounded-md font-semibold transition-all duration-300 text-xs">Toto 4D</button> <button id="tab-3d" class="tab-btn px-3 py-2 rounded-md font-semibold transition-all duration-300 text-xs">Toto 3D</button> <button id="tab-4d-on" class="tab-btn px-3 py-2 rounded-md font-semibold transition-all duration-300 text-xs">4D ON</button> <button id="tab-3d-on" class="tab-btn px-3 py-2 rounded-md font-semibold transition-all duration-300 text-xs">3D ON</button> <button id="tab-2d" class="tab-btn px-3 py-2 rounded-md font-semibold transition-all duration-300 text-xs">2D ON</button>
+     </div>
+    </div><!-- Day Selection -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+     <div><label for="javanese-day" class="block text-sm font-medium mb-2">Hari Pasaran Jawa:</label> <select id="javanese-day" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent"> <option value="pon">Pon</option> <option value="wage">Wage</option> <option value="kliwon">Kliwon</option> <option value="legi">Legi</option> <option value="pahing">Pahing</option> </select>
+     </div>
+     <div><label for="weekday" class="block text-sm font-medium mb-2">Hari dalam Minggu:</label> <select id="weekday" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent"> <option value="senin">Senin</option> <option value="selasa">Selasa</option> <option value="rabu">Rabu</option> <option value="kamis">Kamis</option> <option value="jumat">Jumat</option> <option value="sabtu">Sabtu</option> <option value="minggu">Minggu</option> </select>
+     </div>
+    </div><!-- 8-Digit Input Area (Only for ON games) -->
+    <div id="eight-digit-section" class="hidden mb-4"><label for="eight-digit-input" class="block text-sm font-medium mb-2">Input 8 Digit Angka:</label> <textarea id="eight-digit-input" rows="3" placeholder="Masukkan 8 digit angka (contoh: 12345678)" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:ring-2 focus:ring-yellow-400 focus:border-transparent resize-none"></textarea>
+     <p class="text-xs text-white/60 mt-1">Format: 8 digit angka untuk analisis ON</p>
+    </div><!-- Generate Numbers Button --> <button id="generate-btn" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 mb-4"> 🎲 <span id="generate-text">Generate Angka Main</span> </button> <!-- Generated Numbers Display -->
+    <div id="generated-numbers" class="hidden">
+     <h3 class="text-lg font-semibold mb-3 text-center" id="generated-title">Angka Main Berdasarkan Pasaran:</h3>
+     <div id="main-numbers" class="flex justify-center gap-3 mb-4 flex-wrap"></div>
+    </div><!-- 4D Predictions Display -->
+    <div id="4d-predictions-display" class="hidden">
+     <h3 class="text-lg font-semibold mb-3 text-center">🎯 Prediksi 4D (Triple Pattern):</h3>
+     <div id="4d-predictions" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"></div>
+    </div><!-- 3D Predictions Display -->
+    <div id="3d-predictions-display" class="hidden">
+     <h3 class="text-lg font-semibold mb-3 text-center">🎲 Prediksi 3D (Triple Pattern):</h3>
+     <div id="3d-predictions" class="grid grid-cols-3 md:grid-cols-6 gap-2 mb-4"></div>
+    </div><!-- 4D ON Display -->
+    <div id="4d-on-display" class="hidden">
+     <h3 class="text-lg font-semibold mb-3 text-center">🔥 4D ON (Jawa-China-Weekday):</h3>
+     <div id="4d-on-numbers" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"></div>
+    </div><!-- 3D ON Display -->
+    <div id="3d-on-display" class="hidden">
+     <h3 class="text-lg font-semibold mb-3 text-center">⚡ 3D ON (Jawa-China-Weekday):</h3>
+     <div id="3d-on-numbers" class="grid grid-cols-3 md:grid-cols-6 gap-2 mb-4"></div>
+    </div><!-- 2D ON Display -->
+    <div id="2d-on-display" class="hidden">
+     <h3 class="text-lg font-semibold mb-3 text-center">💥 2D ON (Jawa-China-Weekday):</h3>
+     <div id="2d-on-numbers" class="grid grid-cols-5 gap-2 mb-4"></div>
+    </div><!-- Result Input -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4" id="result-section">
+     <div><label for="result-input" class="block text-sm font-medium mb-2" id="result-label">Input Result 5D:</label> <input type="text" id="result-input" maxlength="5" placeholder="12345" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
+     </div>
+     <div class="flex items-end"><button id="save-result-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300"> 💾 Simpan Result </button>
+     </div>
+    </div><!-- Loading Indicator -->
+    <div id="loading" class="hidden text-center py-4">
+     <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400"></div>
+     <p class="mt-2 text-sm">Menyimpan data...</p>
+    </div>
+   </section><!-- History Section -->
+   <section class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+    <h2 class="text-2xl font-semibold mb-4 text-center text-yellow-300">📊 Riwayat Draw</h2>
+    <div id="history-container" class="space-y-3">
+     <p class="text-center text-white/70 py-8">Belum ada data riwayat. Mulai dengan generate angka main dan simpan result.</p>
+    </div>
+   </section><!-- Footer -->
+   <footer class="text-center mt-8 text-white/60">
+    <p id="footer-text">Sistem prediksi berdasarkan pasaran Jawa dan kolaborasi China</p>
+   </footer>
+  </main>
+  <script>
+        // Configuration for editable features
+        const defaultConfig = {
+            system_title: "Toto Macau System",
+            footer_text: "Sistem prediksi berdasarkan pasaran Jawa dan kolaborasi China",
+            primary_color: "#fbbf24",
+            secondary_color: "#1e40af",
+            background_color: "#312e81",
+            text_color: "#ffffff",
+            accent_color: "#10b981",
+            font_family: "Inter",
+            font_size: 16
+        };
+
+        // Javanese market number patterns
+        const javanesePatterns = {
+            pon: [1, 6, 2, 7, 3],
+            wage: [4, 9, 5, 0, 6],
+            kliwon: [2, 7, 3, 8, 4],
+            legi: [5, 0, 6, 1, 7],
+            pahing: [3, 8, 4, 9, 5]
+        };
+
+        // Chinese collaboration patterns for ON games
+        const chinesePatterns = {
+            pon: [8, 3, 9, 4, 0],
+            wage: [1, 6, 2, 7, 3],
+            kliwon: [5, 0, 6, 1, 7],
+            legi: [2, 7, 3, 8, 4],
+            pahing: [9, 4, 0, 5, 1]
+        };
+
+        // Weekday patterns (Senin-Minggu)
+        const weekdayPatterns = {
+            senin: [0, 5, 1, 6, 2],
+            selasa: [7, 2, 8, 3, 9],
+            rabu: [4, 9, 5, 0, 6],
+            kamis: [1, 6, 2, 7, 3],
+            jumat: [8, 3, 9, 4, 0],
+            sabtu: [5, 0, 6, 1, 7],
+            minggu: [2, 7, 3, 8, 4]
+        };
+
+        let currentData = [];
+        let isLoading = false;
+        let currentGameType = '5d';
+
+        // Data SDK handler
+        const dataHandler = {
+            onDataChanged(data) {
+                currentData = data;
+                renderHistory();
+            }
+        };
+
+        // Generate main numbers based on Javanese market and weekday
+        function generateMainNumbers(javaneseDay, weekday, gameType) {
+            const javaPattern = javanesePatterns[javaneseDay];
+            const weekPattern = weekdayPatterns[weekday];
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            
+            // Combine Javanese and weekday patterns
+            const numbers = javaPattern.map((num, index) => {
+                const weekVariation = weekPattern[index];
+                const dateVariation = (dayOfMonth + index) % 10;
+                return (num + weekVariation + dateVariation) % 10;
+            });
+
+            // Return appropriate length based on game type
+            if (gameType === '4d') {
+                return numbers.slice(0, 4);
+            } else if (gameType === '3d') {
+                return numbers.slice(0, 3);
+            } else if (gameType === '5d') {
+                return numbers;
+            }
+            return numbers;
+        }
+
+        // Generate 4D predictions (4 combinations)
+        function get4DPredictions(javaneseDay, weekday) {
+            const javaBase = javanesePatterns[javaneseDay];
+            const chinaBase = chinesePatterns[javaneseDay];
+            const weekBase = weekdayPatterns[weekday];
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            
+            let predictions = [];
+            
+            // Prediction 1: Java + China mix
+            let pred1 = '';
+            for (let i = 0; i < 4; i++) {
+                const num = (javaBase[i] + chinaBase[i] + dayOfMonth) % 10;
+                pred1 += num;
+            }
+            predictions.push(pred1);
+            
+            // Prediction 2: Week + Java mix
+            let pred2 = '';
+            for (let i = 0; i < 4; i++) {
+                const num = (weekBase[i] + javaBase[i] + dayOfMonth + 1) % 10;
+                pred2 += num;
+            }
+            predictions.push(pred2);
+            
+            // Prediction 3: China + Week mix
+            let pred3 = '';
+            for (let i = 0; i < 4; i++) {
+                const num = (chinaBase[i] + weekBase[i] + dayOfMonth + 2) % 10;
+                pred3 += num;
+            }
+            predictions.push(pred3);
+            
+            // Prediction 4: Triple mix
+            let pred4 = '';
+            for (let i = 0; i < 4; i++) {
+                const num = (javaBase[i] + chinaBase[i] + weekBase[i] + dayOfMonth + 3) % 10;
+                pred4 += num;
+            }
+            predictions.push(pred4);
+            
+            return predictions;
+        }
+
+        // Generate 3D predictions (6 combinations)
+        function get3DPredictions(javaneseDay, weekday) {
+            const javaBase = javanesePatterns[javaneseDay];
+            const chinaBase = chinesePatterns[javaneseDay];
+            const weekBase = weekdayPatterns[weekday];
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            
+            let predictions = [];
+            
+            // 6 different mixing algorithms for 3D
+            for (let mix = 0; mix < 6; mix++) {
+                let pred = '';
+                for (let i = 0; i < 3; i++) {
+                    let num;
+                    switch (mix) {
+                        case 0: num = (javaBase[i] + chinaBase[i] + dayOfMonth) % 10; break;
+                        case 1: num = (weekBase[i] + javaBase[i] + dayOfMonth + 1) % 10; break;
+                        case 2: num = (chinaBase[i] + weekBase[i] + dayOfMonth + 2) % 10; break;
+                        case 3: num = (javaBase[i] + chinaBase[i] + weekBase[i] + dayOfMonth + 3) % 10; break;
+                        case 4: num = (javaBase[i] * 2 + weekBase[i] + dayOfMonth + 4) % 10; break;
+                        case 5: num = (chinaBase[i] + javaBase[i] * 2 + dayOfMonth + 5) % 10; break;
+                    }
+                    pred += num;
+                }
+                predictions.push(pred);
+            }
+            
+            return predictions;
+        }
+
+        // 4D ON combinations (Jawa-China-Weekday collaboration)
+        function get4DOnNumbers(javaneseDay, weekday, eightDigitInput = '') {
+            const javaBase = javanesePatterns[javaneseDay];
+            const chinaBase = chinesePatterns[javaneseDay];
+            const weekBase = weekdayPatterns[weekday];
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            
+            let combinations = [];
+            
+            // Base combinations from triple patterns
+            for (let i = 0; i < 2; i++) {
+                let combo = '';
+                for (let j = 0; j < 4; j++) {
+                    const javaNum = (javaBase[j] + dayOfMonth + i) % 10;
+                    const chinaNum = (chinaBase[j] + dayOfMonth + i) % 10;
+                    const weekNum = (weekBase[j] + dayOfMonth + i) % 10;
+                    const finalNum = (javaNum + chinaNum + weekNum) % 10;
+                    combo += finalNum;
+                }
+                combinations.push(combo);
+            }
+            
+            // If 8-digit input provided, extract 4D combinations
+            if (eightDigitInput && eightDigitInput.length === 8) {
+                const digits = eightDigitInput.split('').map(Number);
+                // Take 4-digit chunks
+                for (let i = 0; i <= digits.length - 4; i += 2) {
+                    if (i + 3 < digits.length) {
+                        const combo = digits.slice(i, i + 4).join('');
+                        combinations.push(combo);
+                    }
+                }
+            }
+            
+            // Remove duplicates and limit to 8 combinations
+            combinations = [...new Set(combinations)].slice(0, 8);
+            
+            return combinations;
+        }
+
+        // 3D ON combinations (Jawa-China-Weekday collaboration)
+        function get3DOnNumbers(javaneseDay, weekday, eightDigitInput = '') {
+            const javaBase = javanesePatterns[javaneseDay];
+            const chinaBase = chinesePatterns[javaneseDay];
+            const weekBase = weekdayPatterns[weekday];
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            
+            let combinations = [];
+            
+            // Base combinations from triple patterns
+            for (let i = 0; i < 3; i++) {
+                let combo = '';
+                for (let j = 0; j < 3; j++) {
+                    const javaNum = (javaBase[j] + dayOfMonth + i) % 10;
+                    const chinaNum = (chinaBase[j] + dayOfMonth + i) % 10;
+                    const weekNum = (weekBase[j] + dayOfMonth + i) % 10;
+                    const finalNum = (javaNum + chinaNum + weekNum) % 10;
+                    combo += finalNum;
+                }
+                combinations.push(combo);
+            }
+            
+            // If 8-digit input provided, extract 3D combinations
+            if (eightDigitInput && eightDigitInput.length === 8) {
+                const digits = eightDigitInput.split('').map(Number);
+                // Take 3-digit chunks
+                for (let i = 0; i <= digits.length - 3; i++) {
+                    if (i + 2 < digits.length) {
+                        const combo = digits.slice(i, i + 3).join('');
+                        combinations.push(combo);
+                    }
+                }
+            }
+            
+            // Remove duplicates and limit to 10 combinations
+            combinations = [...new Set(combinations)].slice(0, 10);
+            
+            return combinations;
+        }
+
+        // 2D ON combinations (Jawa-China-Weekday collaboration)
+        function get2DOnNumbers(javaneseDay, weekday, eightDigitInput = '') {
+            const javaBase = javanesePatterns[javaneseDay];
+            const chinaBase = chinesePatterns[javaneseDay];
+            const weekBase = weekdayPatterns[weekday];
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            
+            let combinations = [];
+            
+            // Base combinations from Jawa-China patterns
+            for (let i = 0; i < 3; i++) {
+                const javaNum = (javaBase[i] + dayOfMonth) % 10;
+                const chinaNum = (chinaBase[i] + dayOfMonth) % 10;
+                combinations.push(`${javaNum}${chinaNum}`);
+            }
+            
+            // Add weekday-based combinations
+            for (let i = 0; i < 2; i++) {
+                const weekNum = (weekBase[i] + dayOfMonth) % 10;
+                const javaNum = (javaBase[i + 1] + dayOfMonth) % 10;
+                combinations.push(`${weekNum}${javaNum}`);
+            }
+            
+            // If 8-digit input provided, extract additional 2D combinations
+            if (eightDigitInput && eightDigitInput.length === 8) {
+                const digits = eightDigitInput.split('').map(Number);
+                // Take pairs from 8-digit input
+                for (let i = 0; i < digits.length - 1; i += 2) {
+                    if (i + 1 < digits.length) {
+                        combinations.push(`${digits[i]}${digits[i + 1]}`);
+                    }
+                }
+            }
+            
+            // Remove duplicates and limit to 12 combinations
+            combinations = [...new Set(combinations)].slice(0, 12);
+            
+            return combinations;
+        }
+
+        // Render number balls
+        function renderNumberBalls(numbers, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            numbers.forEach((num, index) => {
+                setTimeout(() => {
+                    const ball = document.createElement('div');
+                    ball.className = 'number-ball w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg';
+                    ball.textContent = num;
+                    container.appendChild(ball);
+                }, index * 100);
+            });
+        }
+
+        // Render 4D predictions
+        function render4DPredictions(predictions) {
+            const container = document.getElementById('4d-predictions');
+            container.innerHTML = '';
+            
+            predictions.forEach((pred, index) => {
+                setTimeout(() => {
+                    const predDiv = document.createElement('div');
+                    predDiv.className = 'four-d-ball bg-gradient-to-br from-blue-600 to-purple-700 rounded-lg p-4 text-center text-white font-bold shadow-lg';
+                    predDiv.innerHTML = `
+                        <div class="text-xs text-blue-200 mb-1">4D-${index + 1}</div>
+                        <div class="text-lg">${pred}</div>
+                    `;
+                    container.appendChild(predDiv);
+                }, index * 100);
+            });
+        }
+
+        // Render 3D predictions
+        function render3DPredictions(predictions) {
+            const container = document.getElementById('3d-predictions');
+            container.innerHTML = '';
+            
+            predictions.forEach((pred, index) => {
+                setTimeout(() => {
+                    const predDiv = document.createElement('div');
+                    predDiv.className = 'three-d-ball bg-gradient-to-br from-green-600 to-teal-700 rounded-lg p-3 text-center text-white font-bold shadow-lg';
+                    predDiv.innerHTML = `
+                        <div class="text-xs text-green-200 mb-1">3D-${index + 1}</div>
+                        <div class="text-sm">${pred}</div>
+                    `;
+                    container.appendChild(predDiv);
+                }, index * 80);
+            });
+        }
+
+        // Render 4D ON numbers
+        function render4DOnNumbers(combinations) {
+            const container = document.getElementById('4d-on-numbers');
+            container.innerHTML = '';
+            
+            combinations.forEach((combo, index) => {
+                setTimeout(() => {
+                    const ball = document.createElement('div');
+                    ball.className = 'four-d-ball bg-gradient-to-br from-orange-600 to-red-700 rounded-lg p-4 text-center text-white font-bold shadow-lg';
+                    ball.innerHTML = `
+                        <div class="text-xs text-orange-200 mb-1">4D ON</div>
+                        <div class="text-lg">${combo}</div>
+                    `;
+                    container.appendChild(ball);
+                }, index * 90);
+            });
+        }
+
+        // Render 3D ON numbers
+        function render3DOnNumbers(combinations) {
+            const container = document.getElementById('3d-on-numbers');
+            container.innerHTML = '';
+            
+            combinations.forEach((combo, index) => {
+                setTimeout(() => {
+                    const ball = document.createElement('div');
+                    ball.className = 'three-d-ball bg-gradient-to-br from-purple-600 to-pink-700 rounded-lg p-3 text-center text-white font-bold shadow-lg';
+                    ball.innerHTML = `
+                        <div class="text-xs text-purple-200 mb-1">3D ON</div>
+                        <div class="text-sm">${combo}</div>
+                    `;
+                    container.appendChild(ball);
+                }, index * 85);
+            });
+        }
+
+        // Render 2D ON numbers
+        function render2DOnNumbers(combinations) {
+            const container = document.getElementById('2d-on-numbers');
+            container.innerHTML = '';
+            
+            combinations.forEach((combo, index) => {
+                setTimeout(() => {
+                    const ball = document.createElement('div');
+                    ball.className = 'two-d-ball bg-gradient-to-br from-red-500 to-pink-600 rounded-lg p-3 text-center text-white font-bold text-sm shadow-lg';
+                    ball.textContent = combo;
+                    container.appendChild(ball);
+                }, index * 80);
+            });
+        }
+
+        // Switch game type
+        function switchGameType(gameType) {
+            currentGameType = gameType;
+            
+            // Update tab appearance
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${gameType}`).classList.add('active');
+            
+            // Update UI based on game type
+            const resultInput = document.getElementById('result-input');
+            const resultLabel = document.getElementById('result-label');
+            const generateText = document.getElementById('generate-text');
+            const generatedTitle = document.getElementById('generated-title');
+            const eightDigitSection = document.getElementById('eight-digit-section');
+            const resultSection = document.getElementById('result-section');
+            
+            // Hide all displays first
+            document.getElementById('generated-numbers').classList.add('hidden');
+            document.getElementById('4d-predictions-display').classList.add('hidden');
+            document.getElementById('3d-predictions-display').classList.add('hidden');
+            document.getElementById('4d-on-display').classList.add('hidden');
+            document.getElementById('3d-on-display').classList.add('hidden');
+            document.getElementById('2d-on-display').classList.add('hidden');
+            
+            if (gameType === '5d') {
+                resultInput.maxLength = 5;
+                resultInput.placeholder = '12345';
+                resultLabel.textContent = 'Input Result 5D:';
+                generateText.textContent = 'Generate Angka Main 5D';
+                generatedTitle.textContent = 'Angka Main 5D (Jawa + Hari):';
+                eightDigitSection.classList.add('hidden');
+                resultSection.classList.remove('hidden');
+            } else if (gameType === '4d') {
+                resultInput.maxLength = 4;
+                resultInput.placeholder = '1234';
+                resultLabel.textContent = 'Input Result 4D:';
+                generateText.textContent = 'Generate Prediksi 4D';
+                generatedTitle.textContent = 'Angka Main 4D (Jawa + Hari):';
+                eightDigitSection.classList.add('hidden');
+                resultSection.classList.remove('hidden');
+            } else if (gameType === '3d') {
+                resultInput.maxLength = 3;
+                resultInput.placeholder = '123';
+                resultLabel.textContent = 'Input Result 3D:';
+                generateText.textContent = 'Generate Prediksi 3D';
+                generatedTitle.textContent = 'Angka Main 3D (Jawa + Hari):';
+                eightDigitSection.classList.add('hidden');
+                resultSection.classList.remove('hidden');
+            } else if (gameType === '4d-on') {
+                generateText.textContent = 'Generate 4D ON';
+                generatedTitle.textContent = 'Angka Main (Jawa + Hari):';
+                eightDigitSection.classList.remove('hidden');
+                resultSection.classList.add('hidden');
+            } else if (gameType === '3d-on') {
+                generateText.textContent = 'Generate 3D ON';
+                generatedTitle.textContent = 'Angka Main (Jawa + Hari):';
+                eightDigitSection.classList.remove('hidden');
+                resultSection.classList.add('hidden');
+            } else if (gameType === '2d') {
+                generateText.textContent = 'Generate 2D ON';
+                generatedTitle.textContent = 'Angka Main (Jawa + Hari):';
+                eightDigitSection.classList.remove('hidden');
+                resultSection.classList.add('hidden');
+            }
+        }
+
+        // Render history
+        function renderHistory() {
+            const container = document.getElementById('history-container');
+            
+            if (currentData.length === 0) {
+                container.innerHTML = '<p class="text-center text-white/70 py-8">Belum ada data riwayat. Mulai dengan generate angka main dan simpan result.</p>';
+                return;
+            }
+
+            // Sort by date (newest first)
+            const sortedData = [...currentData].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            
+            container.innerHTML = sortedData.map(item => {
+                const date = new Date(item.created_at).toLocaleDateString('id-ID');
+                const gameType = item.game_type || '5d';
+                const gameTypeLabel = gameType.toUpperCase();
+                
+                let resultDisplay = '';
+                let mainDisplay = '';
+                let twoDDisplay = '';
+                let threeDDisplay = '';
+                let fourDDisplay = '';
+                
+                if (item.result_numbers) {
+                    const resultNumbers = item.result_numbers.split('').map(n => `<span class="inline-block w-8 h-8 bg-blue-600 rounded-full text-center leading-8 text-sm">${n}</span>`).join(' ');
+                    resultDisplay = `
+                        <div class="mb-2">
+                            <p class="text-xs text-white/60 mb-1">Result:</p>
+                            <div class="flex gap-1">${resultNumbers}</div>
+                        </div>
+                    `;
+                }
+                
+                if (item.main_numbers) {
+                    const mainNumbers = item.main_numbers.split(',').map(n => `<span class="inline-block w-8 h-8 bg-yellow-600 rounded-full text-center leading-8 text-sm">${n}</span>`).join(' ');
+                    mainDisplay = `
+                        <div class="mb-2">
+                            <p class="text-xs text-white/60 mb-1">Angka Main:</p>
+                            <div class="flex gap-1 flex-wrap">${mainNumbers}</div>
+                        </div>
+                    `;
+                }
+                
+                if (item.two_d_on_numbers) {
+                    const twoDNumbers = item.two_d_on_numbers.split(',').map(n => `<span class="inline-block px-2 py-1 bg-red-600 rounded text-xs">${n}</span>`).join(' ');
+                    twoDDisplay = `
+                        <div class="mb-2">
+                            <p class="text-xs text-white/60 mb-1">2D ON:</p>
+                            <div class="flex gap-1 flex-wrap">${twoDNumbers}</div>
+                        </div>
+                    `;
+                }
+                
+                if (item.three_d_on_numbers) {
+                    const threeDNumbers = item.three_d_on_numbers.split(',').map(n => `<span class="inline-block px-2 py-1 bg-purple-600 rounded text-xs">${n}</span>`).join(' ');
+                    threeDDisplay = `
+                        <div class="mb-2">
+                            <p class="text-xs text-white/60 mb-1">3D ON:</p>
+                            <div class="flex gap-1 flex-wrap">${threeDNumbers}</div>
+                        </div>
+                    `;
+                }
+                
+                if (item.four_d_on_numbers) {
+                    const fourDNumbers = item.four_d_on_numbers.split(',').map(n => `<span class="inline-block px-2 py-1 bg-orange-600 rounded text-xs">${n}</span>`).join(' ');
+                    fourDDisplay = `
+                        <div class="mb-2">
+                            <p class="text-xs text-white/60 mb-1">4D ON:</p>
+                            <div class="flex gap-1 flex-wrap">${fourDNumbers}</div>
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="fade-in bg-white/5 rounded-lg p-4 border border-white/10">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-sm text-white/80">${date}</span>
+                            <div class="flex gap-2 flex-wrap">
+                                <span class="text-xs bg-purple-600 px-2 py-1 rounded-full">${item.javanese_day}</span>
+                                ${item.weekday ? `<span class="text-xs bg-green-600 px-2 py-1 rounded-full">${item.weekday}</span>` : ''}
+                                <span class="text-xs bg-indigo-600 px-2 py-1 rounded-full">${gameTypeLabel}</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            ${resultDisplay}
+                            ${mainDisplay}
+                            ${twoDDisplay}
+                            ${threeDDisplay}
+                            ${fourDDisplay}
+                        </div>
+                        ${item.eight_digit_input ? `<div class="mt-2 text-xs text-white/50">8-Digit: ${item.eight_digit_input}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Show loading state
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            const saveBtn = document.getElementById('save-result-btn');
+            
+            if (show) {
+                loading.classList.remove('hidden');
+                if (saveBtn) {
+                    saveBtn.disabled = true;
+                    saveBtn.classList.add('opacity-50');
+                }
+            } else {
+                loading.classList.add('hidden');
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.classList.remove('opacity-50');
+                }
+            }
+            isLoading = show;
+        }
+
+        // Event listeners
+        document.getElementById('tab-5d').addEventListener('click', () => switchGameType('5d'));
+        document.getElementById('tab-4d').addEventListener('click', () => switchGameType('4d'));
+        document.getElementById('tab-3d').addEventListener('click', () => switchGameType('3d'));
+        document.getElementById('tab-4d-on').addEventListener('click', () => switchGameType('4d-on'));
+        document.getElementById('tab-3d-on').addEventListener('click', () => switchGameType('3d-on'));
+        document.getElementById('tab-2d').addEventListener('click', () => switchGameType('2d'));
+
+        document.getElementById('generate-btn').addEventListener('click', () => {
+            const javaneseDay = document.getElementById('javanese-day').value;
+            const weekday = document.getElementById('weekday').value;
+            const eightDigitInput = document.getElementById('eight-digit-input').value.replace(/\D/g, '');
+            
+            if (currentGameType === '5d') {
+                const numbers = generateMainNumbers(javaneseDay, weekday, '5d');
+                document.getElementById('generated-numbers').classList.remove('hidden');
+                renderNumberBalls(numbers, 'main-numbers');
+            } else if (currentGameType === '4d') {
+                const numbers = generateMainNumbers(javaneseDay, weekday, '4d');
+                const predictions = get4DPredictions(javaneseDay, weekday);
+                document.getElementById('generated-numbers').classList.remove('hidden');
+                document.getElementById('4d-predictions-display').classList.remove('hidden');
+                renderNumberBalls(numbers, 'main-numbers');
+                render4DPredictions(predictions);
+            } else if (currentGameType === '3d') {
+                const numbers = generateMainNumbers(javaneseDay, weekday, '3d');
+                const predictions = get3DPredictions(javaneseDay, weekday);
+                document.getElementById('generated-numbers').classList.remove('hidden');
+                document.getElementById('3d-predictions-display').classList.remove('hidden');
+                renderNumberBalls(numbers, 'main-numbers');
+                render3DPredictions(predictions);
+            } else if (currentGameType === '4d-on') {
+                const combinations = get4DOnNumbers(javaneseDay, weekday, eightDigitInput);
+                const numbers = generateMainNumbers(javaneseDay, weekday, '5d');
+                document.getElementById('4d-on-display').classList.remove('hidden');
+                document.getElementById('generated-numbers').classList.remove('hidden');
+                render4DOnNumbers(combinations);
+                renderNumberBalls(numbers, 'main-numbers');
+            } else if (currentGameType === '3d-on') {
+                const combinations = get3DOnNumbers(javaneseDay, weekday, eightDigitInput);
+                const numbers = generateMainNumbers(javaneseDay, weekday, '5d');
+                document.getElementById('3d-on-display').classList.remove('hidden');
+                document.getElementById('generated-numbers').classList.remove('hidden');
+                render3DOnNumbers(combinations);
+                renderNumberBalls(numbers, 'main-numbers');
+            } else if (currentGameType === '2d') {
+                const combinations = get2DOnNumbers(javaneseDay, weekday, eightDigitInput);
+                const numbers = generateMainNumbers(javaneseDay, weekday, '5d');
+                document.getElementById('2d-on-display').classList.remove('hidden');
+                document.getElementById('generated-numbers').classList.remove('hidden');
+                render2DOnNumbers(combinations);
+                renderNumberBalls(numbers, 'main-numbers');
+            }
+        });
+
+        document.getElementById('save-result-btn').addEventListener('click', async () => {
+            if (isLoading) return;
+            
+            const resultInput = document.getElementById('result-input').value.trim();
+            const javaneseDay = document.getElementById('javanese-day').value;
+            const weekday = document.getElementById('weekday').value;
+            const mainNumbersContainer = document.getElementById('main-numbers');
+            const eightDigitInput = document.getElementById('eight-digit-input').value.replace(/\D/g, '');
+            
+            let expectedLength, regex;
+            if (currentGameType === '3d') {
+                expectedLength = 3;
+                regex = /^\d{3}$/;
+            } else if (currentGameType === '4d') {
+                expectedLength = 4;
+                regex = /^\d{4}$/;
+            } else {
+                expectedLength = 5;
+                regex = /^\d{5}$/;
+            }
+            
+            if (resultInput.length !== expectedLength || !regex.test(resultInput)) {
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'text-red-400 text-sm mt-2 fade-in';
+                errorMsg.textContent = `Result harus berupa ${expectedLength} digit angka`;
+                document.getElementById('result-input').parentNode.appendChild(errorMsg);
+                setTimeout(() => errorMsg.remove(), 3000);
+                return;
+            }
+
+            if (mainNumbersContainer.children.length === 0) {
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'text-red-400 text-sm mt-2 fade-in';
+                errorMsg.textContent = 'Generate angka main terlebih dahulu';
+                document.getElementById('generate-btn').parentNode.appendChild(errorMsg);
+                setTimeout(() => errorMsg.remove(), 3000);
+                return;
+            }
+
+            if (currentData.length >= 999) {
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'text-red-400 text-sm mt-2 fade-in';
+                errorMsg.textContent = 'Maksimum 999 data tercapai. Hapus beberapa data lama terlebih dahulu.';
+                document.getElementById('save-result-btn').parentNode.appendChild(errorMsg);
+                setTimeout(() => errorMsg.remove(), 5000);
+                return;
+            }
+
+            showLoading(true);
+
+            const mainNumbers = Array.from(mainNumbersContainer.children).map(ball => ball.textContent);
+            let twoDOnNumbers = '';
+            let threeDOnNumbers = '';
+            let fourDOnNumbers = '';
+            
+            if (currentGameType === '2d') {
+                const twoDContainer = document.getElementById('2d-on-numbers');
+                if (twoDContainer.children.length > 0) {
+                    twoDOnNumbers = Array.from(twoDContainer.children).map(ball => ball.textContent).join(',');
+                }
+            } else if (currentGameType === '3d-on') {
+                const threeDContainer = document.getElementById('3d-on-numbers');
+                if (threeDContainer.children.length > 0) {
+                    threeDOnNumbers = Array.from(threeDContainer.children).map(ball => ball.textContent).join(',');
+                }
+            } else if (currentGameType === '4d-on') {
+                const fourDContainer = document.getElementById('4d-on-numbers');
+                if (fourDContainer.children.length > 0) {
+                    fourDOnNumbers = Array.from(fourDContainer.children).map(ball => ball.textContent).join(',');
+                }
+            }
+            
+            const newRecord = {
+                id: Date.now().toString(),
+                draw_date: new Date().toISOString().split('T')[0],
+                result_numbers: resultInput,
+                main_numbers: mainNumbers.join(','),
+                javanese_day: javaneseDay,
+                weekday: weekday,
+                game_type: currentGameType,
+                eight_digit_input: eightDigitInput || '',
+                two_d_on_numbers: twoDOnNumbers,
+                three_d_on_numbers: threeDOnNumbers,
+                four_d_on_numbers: fourDOnNumbers,
+                created_at: new Date().toISOString()
+            };
+
+            const result = await window.dataSdk.create(newRecord);
+            
+            showLoading(false);
+
+            if (result.isOk) {
+                // Clear inputs
+                document.getElementById('result-input').value = '';
+                document.getElementById('eight-digit-input').value = '';
+                document.getElementById('generated-numbers').classList.add('hidden');
+                document.getElementById('4d-predictions-display').classList.add('hidden');
+                document.getElementById('3d-predictions-display').classList.add('hidden');
+                document.getElementById('4d-on-display').classList.add('hidden');
+                document.getElementById('3d-on-display').classList.add('hidden');
+                document.getElementById('2d-on-display').classList.add('hidden');
+                
+                // Show success message
+                const successMsg = document.createElement('div');
+                successMsg.className = 'text-green-400 text-sm mt-2 fade-in';
+                successMsg.textContent = 'Data berhasil disimpan!';
+                document.getElementById('save-result-btn').parentNode.appendChild(successMsg);
+                setTimeout(() => successMsg.remove(), 3000);
+            } else {
+                // Show error message
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'text-red-400 text-sm mt-2 fade-in';
+                errorMsg.textContent = 'Gagal menyimpan data. Silakan coba lagi.';
+                document.getElementById('save-result-btn').parentNode.appendChild(errorMsg);
+                setTimeout(() => errorMsg.remove(), 3000);
+            }
+        });
+
+        // Only allow numbers in result input
+        document.getElementById('result-input').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+
+        // Only allow numbers in 8-digit input
+        document.getElementById('eight-digit-input').addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+
+        // Element SDK configuration
+        async function onConfigChange(config) {
+            const systemTitle = config.system_title || defaultConfig.system_title;
+            const footerText = config.footer_text || defaultConfig.footer_text;
+            const primaryColor = config.primary_color || defaultConfig.primary_color;
+            const backgroundColor = config.background_color || defaultConfig.background_color;
+            const textColor = config.text_color || defaultConfig.text_color;
+            const fontFamily = config.font_family || defaultConfig.font_family;
+            const fontSize = config.font_size || defaultConfig.font_size;
+
+            // Update text content
+            document.getElementById('system-title').textContent = systemTitle;
+            document.getElementById('footer-text').textContent = footerText;
+
+            // Update colors
+            document.body.style.background = `linear-gradient(to bottom right, ${backgroundColor}, #1e40af, #312e81)`;
+            document.body.style.color = textColor;
+            document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+            document.body.style.fontSize = `${fontSize}px`;
+
+            // Update primary color elements
+            const primaryElements = document.querySelectorAll('.text-yellow-300');
+            primaryElements.forEach(el => {
+                el.style.color = primaryColor;
+            });
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.primary_color || defaultConfig.primary_color,
+                        set: (value) => {
+                            config.primary_color = value;
+                            window.elementSdk.setConfig({ primary_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            config.background_color = value;
+                            window.elementSdk.setConfig({ background_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: {
+                    get: () => config.font_family || defaultConfig.font_family,
+                    set: (value) => {
+                        config.font_family = value;
+                        window.elementSdk.setConfig({ font_family: value });
+                    }
+                },
+                fontSizeable: {
+                    get: () => config.font_size || defaultConfig.font_size,
+                    set: (value) => {
+                        config.font_size = value;
+                        window.elementSdk.setConfig({ font_size: value });
+                    }
+                }
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["system_title", config.system_title || defaultConfig.system_title],
+                ["footer_text", config.footer_text || defaultConfig.footer_text]
+            ]);
+        }
+
+        // Initialize SDKs
+        async function initializeApp() {
+            try {
+                // Initialize Data SDK
+                const dataResult = await window.dataSdk.init(dataHandler);
+                if (!dataResult.isOk) {
+                    console.error("Failed to initialize data SDK");
+                    return;
+                }
+
+                // Initialize Element SDK
+                if (window.elementSdk) {
+                    await window.elementSdk.init({
+                        defaultConfig,
+                        onConfigChange,
+                        mapToCapabilities,
+                        mapToEditPanelValues
+                    });
+                }
+            } catch (error) {
+                console.error("Failed to initialize app:", error);
+            }
+        }
+
+        // Start the application
+        initializeApp();
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9953441331c8ce89',t:'MTc2MTU3OTM1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
