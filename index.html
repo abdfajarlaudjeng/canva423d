@@ -104,6 +104,17 @@
     <div id="2d-on-display" class="hidden">
      <h3 class="text-lg font-semibold mb-3 text-center">💥 2D ON (Jawa-China-Weekday):</h3>
      <div id="2d-on-numbers" class="grid grid-cols-5 gap-2 mb-4"></div>
+    </div><!-- Shio Predictions Display -->
+    <div id="shio-predictions-display" class="hidden">
+     <h3 class="text-lg font-semibold mb-3 text-center">🐉 Prediksi Shio Main:</h3><!-- Javanese-Chinese Shio -->
+     <div class="mb-4">
+      <h4 class="text-md font-medium mb-2 text-yellow-300">🏮 Shio Jawa-China:</h4>
+      <div id="javanese-chinese-shio" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+     </div><!-- Daily Shio -->
+     <div class="mb-4">
+      <h4 class="text-md font-medium mb-2 text-blue-300">📅 Shio Harian:</h4>
+      <div id="daily-shio" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
+     </div>
     </div><!-- Result Input -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4" id="result-section">
      <div><label for="result-input" class="block text-sm font-medium mb-2" id="result-label">Input Result 5D:</label> <input type="text" id="result-input" maxlength="5" placeholder="12345" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
@@ -169,6 +180,41 @@
             minggu: [2, 7, 3, 8, 4]
         };
 
+        // Shio (Zodiac) names
+        const shioNames = [
+            'Tikus', 'Kerbau', 'Macan', 'Kelinci', 'Naga', 'Ular',
+            'Kuda', 'Kambing', 'Monyet', 'Ayam', 'Anjing', 'Babi'
+        ];
+
+        // Shio patterns based on Javanese market
+        const javaneseShioPatterns = {
+            pon: [1, 5, 9, 2, 6, 10, 3, 7, 11, 4, 8, 12],
+            wage: [4, 8, 12, 1, 5, 9, 2, 6, 10, 3, 7, 11],
+            kliwon: [7, 11, 3, 4, 8, 12, 1, 5, 9, 2, 6, 10],
+            legi: [10, 2, 6, 7, 11, 3, 4, 8, 12, 1, 5, 9],
+            pahing: [1, 5, 9, 10, 2, 6, 7, 11, 3, 4, 8, 12]
+        };
+
+        // Chinese shio patterns
+        const chineseShioPatterns = {
+            pon: [12, 4, 8, 11, 3, 7, 10, 2, 6, 9, 1, 5],
+            wage: [3, 7, 11, 2, 6, 10, 1, 5, 9, 12, 4, 8],
+            kliwon: [6, 10, 2, 5, 9, 1, 4, 8, 12, 3, 7, 11],
+            legi: [9, 1, 5, 8, 12, 4, 7, 11, 3, 6, 10, 2],
+            pahing: [12, 4, 8, 11, 3, 7, 10, 2, 6, 9, 1, 5]
+        };
+
+        // Daily shio patterns (Senin-Minggu)
+        const dailyShioPatterns = {
+            senin: [1, 5, 9],     // Tikus, Naga, Monyet
+            selasa: [2, 6, 10],   // Kerbau, Kuda, Anjing
+            rabu: [3, 7, 11],     // Macan, Kambing, Babi
+            kamis: [4, 8, 12],    // Kelinci, Monyet, Babi
+            jumat: [1, 5, 9],     // Tikus, Naga, Monyet
+            sabtu: [2, 6, 10],    // Kerbau, Kuda, Anjing
+            minggu: [3, 7, 11]    // Macan, Kambing, Babi
+        };
+
         let currentData = [];
         let isLoading = false;
         let currentGameType = '5d';
@@ -204,6 +250,54 @@
                 return numbers;
             }
             return numbers;
+        }
+
+        // Generate Javanese-Chinese shio predictions
+        function getJavaneseChineseShio(javaneseDay) {
+            const javaShio = javaneseShioPatterns[javaneseDay];
+            const chinaShio = chineseShioPatterns[javaneseDay];
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            
+            let predictions = [];
+            
+            // Main Javanese shio (top 3)
+            for (let i = 0; i < 3; i++) {
+                const shioIndex = (javaShio[i] + dayOfMonth - 1) % 12;
+                predictions.push({
+                    number: javaShio[i],
+                    name: shioNames[shioIndex],
+                    type: 'Jawa'
+                });
+            }
+            
+            // Main Chinese shio (top 3)
+            for (let i = 0; i < 3; i++) {
+                const shioIndex = (chinaShio[i] + dayOfMonth - 1) % 12;
+                predictions.push({
+                    number: chinaShio[i],
+                    name: shioNames[shioIndex],
+                    type: 'China'
+                });
+            }
+            
+            return predictions;
+        }
+
+        // Generate daily shio predictions
+        function getDailyShio(weekday) {
+            const dailyShio = dailyShioPatterns[weekday];
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            
+            return dailyShio.map(shioNum => {
+                const shioIndex = (shioNum + dayOfMonth - 1) % 12;
+                return {
+                    number: shioNum,
+                    name: shioNames[shioIndex],
+                    day: weekday.charAt(0).toUpperCase() + weekday.slice(1)
+                };
+            });
         }
 
         // Generate 4D predictions (4 combinations)
@@ -507,6 +601,45 @@
             });
         }
 
+        // Render Javanese-Chinese shio predictions
+        function renderJavaneseChineseShio(predictions) {
+            const container = document.getElementById('javanese-chinese-shio');
+            container.innerHTML = '';
+            
+            predictions.forEach((pred, index) => {
+                setTimeout(() => {
+                    const shioCard = document.createElement('div');
+                    const bgColor = pred.type === 'Jawa' ? 'from-amber-600 to-orange-700' : 'from-red-600 to-rose-700';
+                    shioCard.className = `fade-in bg-gradient-to-br ${bgColor} rounded-lg p-4 text-center text-white shadow-lg border border-white/20`;
+                    shioCard.innerHTML = `
+                        <div class="text-xs text-white/80 mb-1">${pred.type}</div>
+                        <div class="text-2xl font-bold mb-1">${pred.number}</div>
+                        <div class="text-sm font-medium">${pred.name}</div>
+                    `;
+                    container.appendChild(shioCard);
+                }, index * 100);
+            });
+        }
+
+        // Render daily shio predictions
+        function renderDailyShio(predictions) {
+            const container = document.getElementById('daily-shio');
+            container.innerHTML = '';
+            
+            predictions.forEach((pred, index) => {
+                setTimeout(() => {
+                    const shioCard = document.createElement('div');
+                    shioCard.className = 'fade-in bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg p-4 text-center text-white shadow-lg border border-white/20';
+                    shioCard.innerHTML = `
+                        <div class="text-xs text-blue-200 mb-1">${pred.day}</div>
+                        <div class="text-2xl font-bold mb-1">${pred.number}</div>
+                        <div class="text-sm font-medium">${pred.name}</div>
+                    `;
+                    container.appendChild(shioCard);
+                }, index * 120);
+            });
+        }
+
         // Switch game type
         function switchGameType(gameType) {
             currentGameType = gameType;
@@ -530,6 +663,7 @@
             document.getElementById('4d-on-display').classList.add('hidden');
             document.getElementById('3d-on-display').classList.add('hidden');
             document.getElementById('2d-on-display').classList.add('hidden');
+            document.getElementById('shio-predictions-display').classList.add('hidden');
             
             if (gameType === '5d') {
                 resultInput.maxLength = 5;
@@ -703,6 +837,13 @@
             const weekday = document.getElementById('weekday').value;
             const eightDigitInput = document.getElementById('eight-digit-input').value.replace(/\D/g, '');
             
+            // Always show shio predictions for all game types
+            const javaneseChineseShio = getJavaneseChineseShio(javaneseDay);
+            const dailyShio = getDailyShio(weekday);
+            document.getElementById('shio-predictions-display').classList.remove('hidden');
+            renderJavaneseChineseShio(javaneseChineseShio);
+            renderDailyShio(dailyShio);
+            
             if (currentGameType === '5d') {
                 const numbers = generateMainNumbers(javaneseDay, weekday, '5d');
                 document.getElementById('generated-numbers').classList.remove('hidden');
@@ -846,6 +987,7 @@
                 document.getElementById('4d-on-display').classList.add('hidden');
                 document.getElementById('3d-on-display').classList.add('hidden');
                 document.getElementById('2d-on-display').classList.add('hidden');
+                document.getElementById('shio-predictions-display').classList.add('hidden');
                 
                 // Show success message
                 const successMsg = document.createElement('div');
@@ -977,5 +1119,5 @@
         // Start the application
         initializeApp();
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9953441331c8ce89',t:'MTc2MTU3OTM1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99534e8ef63ea8de',t:'MTc2MTU3OTc4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
