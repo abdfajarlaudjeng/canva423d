@@ -115,6 +115,21 @@
       <h4 class="text-md font-medium mb-2 text-blue-300">📅 Shio Harian:</h4>
       <div id="daily-shio" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
      </div>
+    </div><!-- ON Sum Predictions Display -->
+    <div id="on-sum-predictions-display" class="hidden">
+     <h3 class="text-lg font-semibold mb-3 text-center">🎯 Prediksi Jumlah ON:</h3><!-- Javanese ON Sum -->
+     <div class="mb-4">
+      <h4 class="text-md font-medium mb-2 text-amber-300">🏛️ Jumlah ON Jawa:</h4>
+      <div id="javanese-on-sum" class="grid grid-cols-4 md:grid-cols-6 gap-2"></div>
+     </div><!-- Chinese ON Sum -->
+     <div class="mb-4">
+      <h4 class="text-md font-medium mb-2 text-red-300">🏮 Jumlah ON China:</h4>
+      <div id="chinese-on-sum" class="grid grid-cols-4 md:grid-cols-6 gap-2"></div>
+     </div><!-- Daily ON Sum -->
+     <div class="mb-4">
+      <h4 class="text-md font-medium mb-2 text-green-300">📅 Jumlah ON Harian:</h4>
+      <div id="daily-on-sum" class="grid grid-cols-4 md:grid-cols-6 gap-2"></div>
+     </div>
     </div><!-- Result Input -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4" id="result-section">
      <div><label for="result-input" class="block text-sm font-medium mb-2" id="result-label">Input Result 5D:</label> <input type="text" id="result-input" maxlength="5" placeholder="12345" class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/60 focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
@@ -215,6 +230,35 @@
             minggu: [3, 7, 11]    // Macan, Kambing, Babi
         };
 
+        // ON Sum patterns based on Javanese market
+        const javaneseOnSumPatterns = {
+            pon: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            wage: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
+            kliwon: [2, 3, 4, 5, 6, 7, 8, 9, 0, 1],
+            legi: [3, 4, 5, 6, 7, 8, 9, 0, 1, 2],
+            pahing: [4, 5, 6, 7, 8, 9, 0, 1, 2, 3]
+        };
+
+        // Chinese ON Sum patterns
+        const chineseOnSumPatterns = {
+            pon: [5, 6, 7, 8, 9, 0, 1, 2, 3, 4],
+            wage: [6, 7, 8, 9, 0, 1, 2, 3, 4, 5],
+            kliwon: [7, 8, 9, 0, 1, 2, 3, 4, 5, 6],
+            legi: [8, 9, 0, 1, 2, 3, 4, 5, 6, 7],
+            pahing: [9, 0, 1, 2, 3, 4, 5, 6, 7, 8]
+        };
+
+        // Daily ON Sum patterns (Senin-Minggu)
+        const dailyOnSumPatterns = {
+            senin: [0, 2, 4, 6, 8, 1, 3, 5, 7, 9],
+            selasa: [1, 3, 5, 7, 9, 0, 2, 4, 6, 8],
+            rabu: [2, 4, 6, 8, 0, 1, 3, 5, 7, 9],
+            kamis: [3, 5, 7, 9, 1, 0, 2, 4, 6, 8],
+            jumat: [4, 6, 8, 0, 2, 1, 3, 5, 7, 9],
+            sabtu: [5, 7, 9, 1, 3, 0, 2, 4, 6, 8],
+            minggu: [6, 8, 0, 2, 4, 1, 3, 5, 7, 9]
+        };
+
         let currentData = [];
         let isLoading = false;
         let currentGameType = '5d';
@@ -298,6 +342,63 @@
                     day: weekday.charAt(0).toUpperCase() + weekday.slice(1)
                 };
             });
+        }
+
+        // Generate Javanese ON Sum predictions
+        function getJavaneseOnSum(javaneseDay) {
+            const basePattern = javaneseOnSumPatterns[javaneseDay];
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            const hour = today.getHours();
+            
+            // Generate 8 main ON sum numbers based on Javanese patterns
+            let onSums = [];
+            for (let i = 0; i < 8; i++) {
+                const baseSum = basePattern[i];
+                const variation = (dayOfMonth + hour + i) % 10;
+                const finalSum = (baseSum + variation) % 10;
+                onSums.push(finalSum);
+            }
+            
+            return [...new Set(onSums)]; // Remove duplicates
+        }
+
+        // Generate Chinese ON Sum predictions
+        function getChineseOnSum(javaneseDay) {
+            const basePattern = chineseOnSumPatterns[javaneseDay];
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            const minute = today.getMinutes();
+            
+            // Generate 8 main ON sum numbers based on Chinese patterns
+            let onSums = [];
+            for (let i = 0; i < 8; i++) {
+                const baseSum = basePattern[i];
+                const variation = (dayOfMonth + minute + i) % 10;
+                const finalSum = (baseSum + variation) % 10;
+                onSums.push(finalSum);
+            }
+            
+            return [...new Set(onSums)]; // Remove duplicates
+        }
+
+        // Generate Daily ON Sum predictions
+        function getDailyOnSum(weekday) {
+            const basePattern = dailyOnSumPatterns[weekday];
+            const today = new Date();
+            const dayOfMonth = today.getDate();
+            const dayOfWeek = today.getDay();
+            
+            // Generate 8 main ON sum numbers based on daily patterns
+            let onSums = [];
+            for (let i = 0; i < 8; i++) {
+                const baseSum = basePattern[i];
+                const variation = (dayOfMonth + dayOfWeek + i) % 10;
+                const finalSum = (baseSum + variation) % 10;
+                onSums.push(finalSum);
+            }
+            
+            return [...new Set(onSums)]; // Remove duplicates
         }
 
         // Generate 4D predictions (4 combinations)
@@ -640,6 +741,60 @@
             });
         }
 
+        // Render Javanese ON Sum predictions
+        function renderJavaneseOnSum(onSums) {
+            const container = document.getElementById('javanese-on-sum');
+            container.innerHTML = '';
+            
+            onSums.forEach((sum, index) => {
+                setTimeout(() => {
+                    const sumCard = document.createElement('div');
+                    sumCard.className = 'fade-in bg-gradient-to-br from-amber-600 to-yellow-700 rounded-lg p-3 text-center text-white font-bold shadow-lg border border-white/20';
+                    sumCard.innerHTML = `
+                        <div class="text-xs text-amber-200 mb-1">Jawa</div>
+                        <div class="text-xl font-bold">${sum}</div>
+                    `;
+                    container.appendChild(sumCard);
+                }, index * 80);
+            });
+        }
+
+        // Render Chinese ON Sum predictions
+        function renderChineseOnSum(onSums) {
+            const container = document.getElementById('chinese-on-sum');
+            container.innerHTML = '';
+            
+            onSums.forEach((sum, index) => {
+                setTimeout(() => {
+                    const sumCard = document.createElement('div');
+                    sumCard.className = 'fade-in bg-gradient-to-br from-red-600 to-rose-700 rounded-lg p-3 text-center text-white font-bold shadow-lg border border-white/20';
+                    sumCard.innerHTML = `
+                        <div class="text-xs text-red-200 mb-1">China</div>
+                        <div class="text-xl font-bold">${sum}</div>
+                    `;
+                    container.appendChild(sumCard);
+                }, index * 85);
+            });
+        }
+
+        // Render Daily ON Sum predictions
+        function renderDailyOnSum(onSums) {
+            const container = document.getElementById('daily-on-sum');
+            container.innerHTML = '';
+            
+            onSums.forEach((sum, index) => {
+                setTimeout(() => {
+                    const sumCard = document.createElement('div');
+                    sumCard.className = 'fade-in bg-gradient-to-br from-green-600 to-emerald-700 rounded-lg p-3 text-center text-white font-bold shadow-lg border border-white/20';
+                    sumCard.innerHTML = `
+                        <div class="text-xs text-green-200 mb-1">Harian</div>
+                        <div class="text-xl font-bold">${sum}</div>
+                    `;
+                    container.appendChild(sumCard);
+                }, index * 90);
+            });
+        }
+
         // Switch game type
         function switchGameType(gameType) {
             currentGameType = gameType;
@@ -664,6 +819,7 @@
             document.getElementById('3d-on-display').classList.add('hidden');
             document.getElementById('2d-on-display').classList.add('hidden');
             document.getElementById('shio-predictions-display').classList.add('hidden');
+            document.getElementById('on-sum-predictions-display').classList.add('hidden');
             
             if (gameType === '5d') {
                 resultInput.maxLength = 5;
@@ -844,6 +1000,15 @@
             renderJavaneseChineseShio(javaneseChineseShio);
             renderDailyShio(dailyShio);
             
+            // Always show ON sum predictions for all game types
+            const javaneseOnSum = getJavaneseOnSum(javaneseDay);
+            const chineseOnSum = getChineseOnSum(javaneseDay);
+            const dailyOnSum = getDailyOnSum(weekday);
+            document.getElementById('on-sum-predictions-display').classList.remove('hidden');
+            renderJavaneseOnSum(javaneseOnSum);
+            renderChineseOnSum(chineseOnSum);
+            renderDailyOnSum(dailyOnSum);
+            
             if (currentGameType === '5d') {
                 const numbers = generateMainNumbers(javaneseDay, weekday, '5d');
                 document.getElementById('generated-numbers').classList.remove('hidden');
@@ -988,6 +1153,7 @@
                 document.getElementById('3d-on-display').classList.add('hidden');
                 document.getElementById('2d-on-display').classList.add('hidden');
                 document.getElementById('shio-predictions-display').classList.add('hidden');
+                document.getElementById('on-sum-predictions-display').classList.add('hidden');
                 
                 // Show success message
                 const successMsg = document.createElement('div');
@@ -1119,5 +1285,5 @@
         // Start the application
         initializeApp();
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99534e8ef63ea8de',t:'MTc2MTU3OTc4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'995356767379a8de',t:'MTc2MTU4MDEwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
